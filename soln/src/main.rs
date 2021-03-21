@@ -1,11 +1,9 @@
 mod drivers;
+mod processor;
 
 use std::env;
 use drivers::FileDriver;
 
-fn get_opcode(file_driver: FileDriver) -> u16 {
-    (file_driver.rom[0] as u16) << 8 | (file_driver.rom[1]) as u16
-}
 
 fn main() {
     let args: Vec<String> = env::args().collect();

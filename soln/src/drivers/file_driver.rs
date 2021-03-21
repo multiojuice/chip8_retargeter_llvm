@@ -22,4 +22,9 @@ impl FileDriver {
       size: bytes_read
     }
   }
+
+  pub fn get_opcode(&self, location: u16) -> u16 {
+    let loc: usize = location as usize;
+    (self.rom[loc] as u16) << 8 | (self.rom[loc + 1]) as u16
+  }
 }
