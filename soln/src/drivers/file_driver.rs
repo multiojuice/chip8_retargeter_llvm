@@ -9,16 +9,23 @@ pub struct FileDriver {
 impl FileDriver {
   pub fn new(filename: &str) -> FileDriver {
     let mut f = File::open(filename).expect("Error: Cannot open");
-    let mut buffer = [0u8; 4096];
+    let mut file_buffer = [0u8; 4096 - 512];
 
-    let bytes_read = if let Ok(bytes_read) = f.read(&mut buffer) {
+    let bytes_read = if let Ok(bytes_read) = f.read(&mut file_buffer) {
       bytes_read
     } else {
       0
     };
 
+    let mut rom = [0u8; 4096];
+    let mut index = 0x200;
+    while index < 4096 {
+      rom[index] = file_buffer[index - 0x200];
+      index += 1;
+    }
+    
     FileDriver {
-      rom: buffer,
+      rom,
       size: bytes_read
     }
   }

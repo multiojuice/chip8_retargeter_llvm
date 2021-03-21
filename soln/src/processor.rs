@@ -1,44 +1,40 @@
 use crate::drivers::FileDriver;
 
-struct CPU {
+pub struct CPU {
     // General purpose registers
-    gp_registers: Vec<u8>,
+    gp_registers: [u8; 16],
     // Special registers
     I: u16,
     DT: u8,
     ST: u8,
     PC: u16,
-    SP: u8,
-
-    stack: Vec<u16>,
+    SP: usize,
+    stack: [u16; 16],
     memory: FileDriver
 
 }
 impl CPU {
-    fn new() -> CPU {
+    pub fn new(file_name: &str) -> CPU {
         CPU {
-            gp_registers: vec![0: 16],
+            gp_registers: [0; 16],
             I: 0,
             DT: 0,
             ST: 0,
             PC: 0x200,
             SP: 0,
-            stack: vec![0: 16],
-            memory
+            stack: [0; 16],
+            memory: FileDriver::new(file_name)
         }
     }
 
-    fn read_file(&mut self, file_name: &str) {
-        self.memory = FileDriver::new(file_name)
-    }
-
-    fn execute_next_opcode(&mut self) {
+    pub fn execute_next_opcode(&mut self) {
         let opcode = self.memory.get_opcode(self.PC);
+        println!("{:?}", opcode);
         let draw_flag = false;
 
         // Parts of the opcode that are used by various instructions
-        let addr = (opcode & 0x0FFF);
-        let nibble = (opcode & 0x000F);
+        let addr = opcode & 0x0FFF;
+        let nibble = opcode & 0x000F;
         let x_val = ((opcode & 0x0F00) >> 8) as usize;
         let y_val = ((opcode & 0x00F0) >> 4) as usize;
         let byte = (opcode & 0x00FF) as u8;
