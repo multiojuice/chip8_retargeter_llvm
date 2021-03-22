@@ -1,5 +1,7 @@
 use crate::drivers::FileDriver;
 
+use rand::random;
+
 pub struct CPU {
     // General purpose registers
     gp_registers: [u8; 16],
@@ -167,6 +169,92 @@ impl CPU {
                                 self.gp_registers[x_val] *= 2;
                                 self.PC += 2;
                                 return
+                            },
+                            _ => panic!("Unknown opcode: {}", opcode)
+                        }
+                    },
+                    0x9000 => {
+                        // SNE Vx, Vy: Skip instruction is regX != regY
+                        if self.gp_registers[x_val] != self.gp_registers[y_val] {
+                            self.PC += 2;
+                        }
+                        self.PC += 2;
+                        return
+                    },
+                    0xA000 => {
+                        // LD I, addr: Set I = addr
+                        self.I = addr;
+                        self.PC += 2;
+                        return
+                    },
+                    0xB000 => {
+                        // JP V0, addr: Jump to location addr + V0
+                        self.PC = self.gp_registers[0] as u16 + addr;
+                        return
+                    },
+                    0xC000 => {
+                        // RND Vx: Set regX = random byte AND byte
+                        let rand_num: u8 = random();
+                        self.gp_registers[x_val] = rand_num & byte;
+                        self.PC += 2;
+                        return
+                    },
+                    0xD000 => {
+                        // DRW Vx, Vy, nibble: Display nibble-byte sprite stored at mem loc I at
+                        // (regX, regY) on the screen. Set VF to 1 if there is a collision between pixels
+                        // TODO Display stuff
+                        unimplemented!()
+                    },
+                    0xE000 => {
+                        match opcode & 0x00FF {
+                            0x009E => {
+                                // SKP Vx: Skip next instruction if key with value regX is pressed
+                                // TODO I/O Stuff
+                                unimplemented!()
+                            },
+                            0x00A1 => {
+                                // SKNP Vx: Skip next instruction if key with value regX is not pressed
+                                // TODO I/O Stuff
+                                unimplemented!()
+                            },
+                            _ => panic!("Unknown opcode: {}", opcode)
+                        }
+                    },
+                    0xF000 => {
+                        match opcode & 0x00FF {
+                            0x0007 => {
+                                // LD VX, DT: Set regX = delay timer value
+                                self.gp_registers[x_val] = self.DT;
+                                self.PC += 2;
+                                return
+                            },
+                            0x000A => {
+                                // LD Vx, K: Wait for a key press then store that key val in regX
+                                // TODO I/O stuff
+                                unimplemented!()
+                            },
+                            0x0015 => {
+                                // LD DT, Vx: Set delay time = regX
+                                self.DT = self.gp_registers[x_val];
+                                self.PC += 2;
+                                return
+                            },
+                            0x0018 => {
+                                // LD ST, VX: Set sound timer = regX
+                                self.ST = self.gp_registers[x_val];
+                                self.PC += 2;
+                                return
+                            },
+                            0x001E => {
+                                // ADD I, VX: Set I = I + regX
+                                self.I += self.gp_registers[x_val] as u16;
+                                self.PC += 2;
+                                return
+                            },
+                            0x0029 => {
+                                // LD F, Vx: Set I = location in memory for the hex font sprite for digit regX
+                                // TODO Add fonts
+                                unimplemented!()
                             },
                             _ => panic!("Unknown opcode: {}", opcode)
                         }
