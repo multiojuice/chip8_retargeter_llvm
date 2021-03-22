@@ -31,6 +31,9 @@ impl FileDriver {
   }
 
   pub fn get_opcode(&self, location: u16) -> u16 {
+    if location > 4090 {
+      return 0;
+    }
     let loc: usize = location as usize;
     (self.rom[loc] as u16) << 8 | (self.rom[loc + 1]) as u16
   }

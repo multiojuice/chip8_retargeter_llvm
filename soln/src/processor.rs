@@ -45,7 +45,9 @@ impl CPU {
             0x00E0 => {
                 // TODO Display stuff
                 // CLS: Clear screen
-                unimplemented!()
+                print!("clear");
+                self.PC += 2;
+                return
             },
             0x00EE => {
                 // RET: Return from subroutine
@@ -170,7 +172,7 @@ impl CPU {
                                 self.PC += 2;
                                 return
                             },
-                            _ => panic!("Unknown opcode: {}", opcode)
+                            _ => {println!("Unknown opcode: {}", opcode); self.PC += 2; return}
                         }
                     },
                     0x9000 => {
@@ -259,8 +261,7 @@ impl CPU {
                             _ => panic!("Unknown opcode: {}", opcode)
                         }
                     },
-                    _ => panic!("Unknown opcode: {}", opcode)
-
+                    _ => {println!("Unknown opcode: {}", opcode); self.PC += 2; return}
                 }
             }
         }
