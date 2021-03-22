@@ -219,7 +219,7 @@ impl CPU {
                                 // TODO I/O Stuff
                                 unimplemented!()
                             },
-                            _ => panic!("Unknown opcode: {}", opcode)
+                            _ => {println!("Unknown opcode: {}", opcode); self.PC += 2; return}
                         }
                     },
                     0xF000 => {
@@ -255,10 +255,40 @@ impl CPU {
                             },
                             0x0029 => {
                                 // LD F, Vx: Set I = location in memory for the hex font sprite for digit regX
-                                // TODO Add fonts
-                                unimplemented!()
+                                let font_digit: u8 = self.gp_registers[x_val];
+                                // All font sprites start at location (their decimal value times 5)
+                                self.I = (font_digit * 5) as u16;
+                                self.PC += 2;
+                                return
                             },
-                            _ => panic!("Unknown opcode: {}", opcode)
+                            0x0033 => {
+                                // LD B, Vx: Store BCD representation of regX in mem locations I, I+1, I+2
+                                let mut num: u8 = self.gp_registers[x_val];
+                                self.memory.write_byte(self.I, num / 100);
+                                num %= 100;
+                                self.memory.write_byte(self.I + 1, num / 10);
+                                num %= 10;
+                                self.memory.write_byte(self.I + 2, num);
+                                self.PC += 2;
+                                return
+                            },
+                            0x0055 => {
+                                // LD [I], Vx: Store registers reg0 through regX in mem starting at I
+                                for i in 0..x_val {
+                                    self.memory.write_byte(i as u16, self.gp_registers[i]);
+                                }
+                                self.PC += 2;
+                                return
+                            },
+                            0x0065 => {
+                                // LD Vx, [I]: Read registers reg0 through regX from mem starting at I
+                                for i in 0..x_val {
+                                    self.gp_registers[i] = self.memory.read_byte(i as u16);
+                                }
+                                self.PC += 2;
+                                return
+                            },
+                            _ => {println!("Unknown opcode: {}", opcode); self.PC += 2; return}
                         }
                     },
                     _ => {println!("Unknown opcode: {}", opcode); self.PC += 2; return}
