@@ -231,13 +231,22 @@ impl CPU {
                         match opcode & 0x00FF {
                             0x009E => {
                                 // SKP Vx: Skip next instruction if key with value regX is pressed
-                                // TODO I/O Stuff
-                                unimplemented!()
+                                let key = self.gp_registers[x_val] as usize;
+                                if self.mmio.input_memory[key] {
+                                    self.PC += 4
+                                } else {
+                                    self.PC += 2;
+                                }
                             },
                             0x00A1 => {
                                 // SKNP Vx: Skip next instruction if key with value regX is not pressed
-                                // TODO I/O Stuff
-                                unimplemented!()
+                                let key = self.gp_registers[x_val] as usize;
+                                if !self.mmio.input_memory[x_val] {
+                                    self.PC += 4
+                                } else {
+                                    self.PC += 2;
+                                }
+                                return
                             },
                             _ => {println!("Unknown opcode: {}", opcode); self.PC += 2; return}
                         }
@@ -252,8 +261,14 @@ impl CPU {
                             },
                             0x000A => {
                                 // LD Vx, K: Wait for a key press then store that key val in regX
-                                // TODO I/O stuff
-                                unimplemented!()
+                                for (i, v) in self.mmio.input_memory.iter().enumerate() {
+                                    if *v {
+                                        self.PC += 2;
+                                        self.gp_registers[x_val] = i as u8;
+                                        return
+                                    }
+                                }
+                                return 
                             },
                             0x0015 => {
                                 // LD DT, Vx: Set delay time = regX
