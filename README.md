@@ -27,7 +27,13 @@ Author(s):
 | 0x8*xy*2 | AND Vx, Vy   | Perform bitwise AND on the values in registers *x* and *y*, then store the result in register *x* |
 | 0x8*xy*3 | XOR Vx, Vy   | Perform bitwise XOR on the values in registers *x* and *y*, then store the result in register *x* |
 | 0x8*xy*4 | ADD Vx, Vy   | Add register *y* to register *x*. If the result is greater than 8bits (>255) set register 0xF to 1 for the carry, otherwise 0. Only lowest 8 bits of the result is kept and stored in register *x* | 
-
+| 0x8*xy*5 | SUB Vx, Vy   | Subtract register *y* from register *x*. If register *x* is greater than register *y* set register 0xF to 1 other wise 0. This represents no borrow. Store the result in register *x*. |
+| 0x8*xy*6 | SHR Vx       |  Set register 0xF to the least significant bit of register *x*.Then bitwise shift right on register *x*.|
+| 0x8*xy*7 | SUBN Vx, Vy  | Subtract register *x* from register *y*. If register *y* is greater than register *x* set register 0xF to 1 other wise 0. This represents no borrow. Store result in register *x*. |
+| 0x8*xy*E | SHL Vx       | Set register 0xF to the most significant bit of register *x*. Then bitwise shift life on register *x*. |
+| 0x9*xy*0 | SNE Vx, Vy   | Skip next instruction if register *x* does not equal register *y*. |
+| 0xA*nnn* | LD I, *nnn*  | Set I register equal to *nnn*. |
+| 0xB*nnn* | JP V0, *nnn* | Jump to address *nnn* plus register 0. |
 ---
 ---
 
