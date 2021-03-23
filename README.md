@@ -36,6 +36,14 @@ Author(s):
 | 0xB*nnn* | JP V0, *nnn* | Jump to address *nnn* plus register 0. |
 | 0xC*xkk* | RND Vx, *kk* | Set register *x* to the value of *kk* ANDed with a random 8bit (0 to 255) number. |
 | 0xD*xyn* | DRW Vx, Vy, *n* | Read in an *n*-byte sized sprite starting at the address stored in register I. Display the sprite at location (register *x*, register *y*). Sprites wrap around the dge of the screen and if any pixels are erased, due to the XOR operation of displaying the sprite, set register 0xF to 1. |
+| 0xE*x*9E | SKP Vx | Skip next instruction if the key with the value of register *x* is pressed. |
+| 0xE*x*A1 | SKNP Vx | Skip next instruction if the key with the value of register *x* is not pressed. |
+| 0xF*x*07 | LD Vx, DT | Set register *x* to equal the delay timer. |
+| 0xF*x*0A | LD Vx, K  | Wait for a key press and then store that key value in register *x*. This opcode should stop all execution until any key is pressed. |
+| 0xF*x*15 | LD DT, Vx | Set the delay timer equal to register *x* |
+| 0xF*x*18 | LD ST, Vx | Set the sound timer equal to register *x* |
+| 0xF*x*1E | ADD I, Vx | Add the value of register *x* to the I register and store it back in the I register |
+| 0xF*x*29 | LD F, Vx  | Set the I register equal to the location of the hex font sprite that has the value corresponding to register *x*'s value. Check below for more information on the fonts |
 ---
 ---
 
