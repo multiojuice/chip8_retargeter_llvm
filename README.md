@@ -1,13 +1,32 @@
-# Assignment Title
+# CHIP-8 Interpreter
 
 Brief overview (approx. one paragraph)...
 
 Author(s):
 
-- Name1
-- Name2
+- Zachary Johnson
+- Owen Sullivan
 
 ## Assignment Details
+
+## Opcode Information
+| Opcode   | Name       | Description |
+|----------|------------|-------------|
+| 0x0*nnn* | SYS *nnn* | This instruction is ignored by modern interpreters |
+| 0x00E0   | CLS      | Clear display |
+| 0x00EE   | RET      | Return from a subroutine by setting the Program Counter to the address at the top of the stack. Remember to decrement the stack pointer |
+| 0x1*nnn* | JP *nnn*  | Jump to address *nnn* |
+| 0x2*nnn* | CALL *nnn* | Call subroutine at address *nnn*. Put the current Program Counter on the stack and increment the stack pointer by 1. Then jump to address *nnn* |
+| 0x3*xkk* | SE Vx, *kk* | Skip the next instruction if register *x* equals *kk* |
+| 0x4*xkk* | SNE Vx, *kk* | Skip the next instruction if register *x* equals *kk* |
+| 0x5*xy*0 | SE Vx, Vy    | Skip the next instruction if register *x* equals register *y* |
+| 0x6*xkk* | LD Vx, *kk* | Load the value *kk* into register *x* |
+| 0x7*xkk* | ADD Vx, *kk* | Add *kk* to the value of register *x* and store it in register *x* |
+| 0x8*xy*0 | LD Vx, Vy    | Load the value of register *y* into register *x* |
+| 0x8*xy*1 | OR Vx, Vy    | Perform bitwise OR on the values in registers *x* and *y*, then store the result in register *x* |
+| 0x8*xy*2 | AND Vx, Vy   | Perform bitwise AND on the values in registers *x* and *y*, then store the result in register *x* |
+| 0x8*xy*3 | XOR Vx, Vy   | Perform bitwise XOR on the values in registers *x* and *y*, then store the result in register *x* |
+| 0x8*xy*4 | ADD Vx, Vy   | Add register *y* to register *x*. If the result is greater than 8bits (>255) set register 0xF to 1 for the carry, otherwise 0. Only lowest 8 bits of the result is kept and stored in register *x* | 
 
 ---
 ---
