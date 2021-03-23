@@ -11,9 +11,9 @@ pub struct CPU {
     ST: u8,
     PC: u16,
     SP: usize,
+    d_flag: bool,
     stack: [u16; 16],
     memory: FileDriver
-
 }
 impl CPU {
     pub fn new(file_name: &str) -> CPU {
@@ -24,6 +24,7 @@ impl CPU {
             ST: 0,
             PC: 0x200,
             SP: 0,
+            d_flag: false,
             stack: [0; 16],
             memory: FileDriver::new(file_name)
         }
@@ -32,7 +33,7 @@ impl CPU {
     pub fn execute_next_opcode(&mut self) {
         let opcode = self.memory.get_opcode(self.PC);
         println!("{:?}", opcode);
-        let draw_flag = false;
+        self.d_flag = false;
 
         // Parts of the opcode that are used by various instructions
         let addr = opcode & 0x0FFF;
@@ -297,4 +298,17 @@ impl CPU {
         }
     }
 
+    pub fn update_timers(&mut self) {
+        if self.DT > 0 {
+            self.DR -= 1;
+        }
+        if self.SP > 0 {
+            println!("Beep");
+            self.ST -= 1;
+        }
+    }
+
+    pub fn get_draw_flag(&self) -> bool {
+        self.d_flag
+    }
 }
