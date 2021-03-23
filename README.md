@@ -44,6 +44,9 @@ Author(s):
 | 0xF*x*18 | LD ST, Vx | Set the sound timer equal to register *x* |
 | 0xF*x*1E | ADD I, Vx | Add the value of register *x* to the I register and store it back in the I register |
 | 0xF*x*29 | LD F, Vx  | Set the I register equal to the location of the hex font sprite that has the value corresponding to register *x*'s value. Check below for more information on the fonts |
+| 0xF*x*33 | LD B, Vx  | Store the binary-coded decimal representation of the value in register *x* in memory locations I, I+1, and I+2. The hundres place should be stored in memory location represented by the value in the I register, tens place in I+1, and ones place in I+2. |
+| 0xF*x*55 | LD [I], Vx | Store registers 0 through *x* in memory starting at address stored in the I register |
+| 0xF*x*65 | LD Vx, [I] | Read registers 0 through *x* from memory starting at address stored in the I register |
 ---
 ---
 
