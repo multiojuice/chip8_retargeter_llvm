@@ -34,6 +34,8 @@ Author(s):
 | 0x9*xy*0 | SNE Vx, Vy   | Skip next instruction if register *x* does not equal register *y*. |
 | 0xA*nnn* | LD I, *nnn*  | Set I register equal to *nnn*. |
 | 0xB*nnn* | JP V0, *nnn* | Jump to address *nnn* plus register 0. |
+| 0xC*xkk* | RND Vx, *kk* | Set register *x* to the value of *kk* ANDed with a random 8bit (0 to 255) number. |
+| 0xD*xyn* | DRW Vx, Vy, *n* | Read in an *n*-byte sized sprite starting at the address stored in register I. Display the sprite at location (register *x*, register *y*). Sprites wrap around the dge of the screen and if any pixels are erased, due to the XOR operation of displaying the sprite, set register 0xF to 1. |
 ---
 ---
 
