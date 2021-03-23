@@ -3,17 +3,25 @@ mod processor;
 
 use std::time::{Instant, Duration};
 use std::thread::sleep;
-use std::env;
-
 use processor::CPU;
 
-
 extern crate sdl2;
-
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 
+/******************
+ * CONFIG
+ ******************/
+ const SCALAR: u32 = 16;
+ const VIDEO_WIDTH: usize = 64;
+ const VIDEO_HEIGHT: usize = 32;
+ const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
+ const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
+
+/******************
+ * FUNCTIONS
+ ******************/
 pub fn main() -> Result<(), String> {
     let mut cpu: CPU = CPU::new("/Users/multiojuice/School/group06/soln/assets/chp8_IBM_logo.ch8");
 
@@ -55,8 +63,5 @@ pub fn main() -> Result<(), String> {
         }
 
         let thing = cpu.execute_next_opcode();
-
     }
-
-    Ok(())
 }

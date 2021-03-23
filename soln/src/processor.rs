@@ -1,8 +1,23 @@
 use crate::drivers::FileDriver;
-
 use rand::random;
 
+/******************
+ * CONFIG
+ ******************/
+ const SCALAR: u32 = 16;
+ const VIDEO_WIDTH: usize = 64;
+ const VIDEO_HEIGHT: usize = 32;
+ const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
+ const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
+
+pub struct MMIO {
+    video_memory: [[u8; VIDEO_WIDTH]; VIDEO_HEIGHT],
+    input_memory: [bool; 16]
+}
+
 pub struct CPU {
+    // Memmory mapped Input Output
+    mmio: MMIO,
     // General purpose registers
     gp_registers: [u8; 16],
     // Special registers
@@ -18,6 +33,10 @@ pub struct CPU {
 impl CPU {
     pub fn new(file_name: &str) -> CPU {
         CPU {
+            mmio: MMIO {
+                video_memory: [[0; VIDEO_WIDTH]; VIDEO_HEIGHT],
+                input_memory: [false; 16]
+            },
             gp_registers: [0; 16],
             I: 0,
             DT: 0,
@@ -300,7 +319,7 @@ impl CPU {
 
     pub fn update_timers(&mut self) {
         if self.DT > 0 {
-            self.DR -= 1;
+            self.DT -= 1;
         }
         if self.SP > 0 {
             println!("Beep");
