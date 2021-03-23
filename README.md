@@ -8,8 +8,30 @@ Author(s):
 - Owen Sullivan
 
 ## Assignment Details
+In this assignment you will be implementing an interpreter to run programs written in the Chip-8 programming language. Your job will be to implement the memory and CPU functionality for the interpreter, the display and I/O functions are done for you. Below is all of the information you will need to implement memory and CPU functionality.
 
-## Opcode Information
+### Memory
+The Chip-8 language is able to access up to 4KB of ram or 4,096 bytes. In hex these are addresses 0x000 (0) to 0xFFF (4,096). Most Chip-8 programs start at location 0x200 (512) as the first 512 bytes are reserved for the interpreter (0x000 - 0x1FF) and are not used by any programs. 
+
+Chip-8 also supports hex fonts which are sprites that represent the hex digits 0 through F. Each font sprite is 5 bytes long. These have been provided for you in file_driver.rs. All you will need to do is put the fonts into memory, in the block that is reserved for the interpreter (0x000 - 0x1FF). Make sure you place them somewhere that will be easy to get later since one instruction does require you to get the memory location of individual fonts.
+
+### Registers
+  Chip-8 has 16 general use registers, each capable of storing 8-bit values. In this document general purpose registers will be referred to as Vx or Vy where x and y are a hexadecimal digit. Another register, referred to as the I register, is usually used to hold memory addresses and can hold 16-bit values. Register VF shouldn't be used by any program as it is used as a flag by some of the opcodes.
+
+  There are also 2 special purpose 8-bit registers referred to as DT, for delay timer, and ST for sound timer. While these registers are not zero, their value are decreased by 1 at a rate of 60Hz. The sound timer, when not zero, is active and means the Chip-8 buzzer would sound until it reached zero. For this assignment you are not required to make the program actually make sound, a simple print statement whenever a sound would be played is sufficient. The delay timer is used by some instructions.
+
+Other registers that your interpreters will need are the 16-bit program counter (PC) and the 8-bit stack pointer (SP). The program counter is used to keep track of where in the program the interpreter is at, and holds address of the current instruction. The stack pointer is used to point to the top level of the stack. The stack is an array of 16 16-bit values, which stores addresses that the program can return to when it finishes a subroutine. Because of this the Chip-8 is built to allow up to 16 levels of nested subroutines.
+
+### Opcode Information
+Chip-8 opcodes are 2 bytes long, stored with the most significant byte first. Since each memory location can only hold a single byte, to get a full opcode you need to read an even memory address and the address next to it. Because of this remember to increment the program counter by 2, after each instruction that requires it, to stay at an even address. Any sprite data will be properly padded so that all instructions after are still in the right place.
+
+The following variables are used in the descriptions below:
+- *nnn*: A 12-bit value in the lowest 12 bits of the instruction. Used mostly to give memory addresses.
+- *n*: A 4-bit value in the lowest 4 bits of the instruction. Used by the draw instruction to indicate the size of a sprite in bytes.
+- *x*: A 4-bit value in the lower 4 bits of the first half (high-byte) of the instruction. This is one of the values used to indicate a specific register.
+- *y*: A 4-bit value in the upper 4 bits of the second half (low-byte) of the instruction. This is one of the values used to indicate a specific register.
+- *kk*: An 8-bit value in the lowest 8 bits of the instruction. Used in instructions where some constant 8-bit value is needed.
+
 | Opcode   | Name       | Description |
 |----------|------------|-------------|
 | 0x0*nnn* | SYS *nnn* | This instruction is ignored by modern interpreters |
