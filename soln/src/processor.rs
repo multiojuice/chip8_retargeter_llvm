@@ -312,9 +312,9 @@ impl CPU {
                             },
                             0x0029 => {
                                 // LD F, Vx: Set I = location in memory for the hex font sprite for digit regX
-                                let font_digit: u8 = self.gp_registers[x_val];
+                                let font_digit: u16 = self.gp_registers[x_val] as u16;
                                 // All font sprites start at location (their decimal value times 5)
-                                self.I = (font_digit * 5) as u16;
+                                self.I = font_digit * 5;
                                 self.PC += 2;
                                 return
                             },
