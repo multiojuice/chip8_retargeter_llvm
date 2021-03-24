@@ -16,7 +16,7 @@ pub struct MMIO {
 }
 
 pub struct CPU {
-    // Memmory mapped Input Output
+    // Memory mapped Input Output
     pub mmio: MMIO,
     // General purpose registers
     gp_registers: [u8; 16],
@@ -69,6 +69,7 @@ impl CPU {
                         self.mmio.video_memory[i][j] = 0;        
                     }
                 }
+                self.d_flag = true;
                 self.PC += 2;
                 return
             },
@@ -241,7 +242,8 @@ impl CPU {
                                 self.mmio.video_memory[y][x] ^= colored;
                             }
                         }
-                        
+
+                        self.d_flag = true;
                         self.PC += 2;
                         return
                     },

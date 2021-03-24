@@ -24,7 +24,7 @@ pub fn main() -> Result<(), String> {
     let context = sdl2::init()?;
     let mut video_driver = VideoDriver::new(&context);
     let mut input_driver = InputDriver::new(&context);
-    let mut cpu: CPU = CPU::new("/Users/multiojuice/School/group06/soln/assets/chp8_IBM_logo.ch8");
+    let mut cpu: CPU = CPU::new("/home/zach/Programs/RustStuff/group06/soln/assets/chp8_IBM_logo.ch8");
 
     loop {
         let duration = Instant::now();
@@ -37,8 +37,9 @@ pub fn main() -> Result<(), String> {
         }
 
         cpu.execute_next_opcode();
-        video_driver.draw(&cpu.mmio.video_memory);
-
+        if cpu.get_draw_flag() {
+            video_driver.draw(&cpu.mmio.video_memory);
+        }
         if duration.elapsed() < execution_rate {
             sleep(execution_rate - duration.elapsed())
         }
