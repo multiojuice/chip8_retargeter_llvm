@@ -4,16 +4,9 @@
  */
 
 use crate::drivers::FileDriver;
+use crate::VIDEO_HEIGHT;
+use crate::VIDEO_WIDTH;
 use rand::random;
-
-/******************
- * CONFIG
- ******************/
- const SCALAR: u32 = 16;
- const VIDEO_WIDTH: usize = 64;
- const VIDEO_HEIGHT: usize = 32;
- const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
- const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
 
 pub struct MMIO {
     pub video_memory: [[u8; VIDEO_WIDTH]; VIDEO_HEIGHT],

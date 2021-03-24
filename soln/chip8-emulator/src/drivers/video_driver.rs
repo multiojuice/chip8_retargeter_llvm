@@ -9,15 +9,11 @@ use sdl2::pixels;
 use sdl2::rect::Rect;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
-
-/******************
- * CONFIG
- ******************/
- const SCALAR: u32 = 16;
- const VIDEO_WIDTH: usize = 64;
- const VIDEO_HEIGHT: usize = 32;
- const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
- const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
+use crate::SDL_HEIGHT;
+use crate::SDL_WIDTH;
+use crate::VIDEO_WIDTH;
+use crate::VIDEO_HEIGHT;
+use crate::SCALAR;
 
 pub struct VideoDriver {
   canvas: Canvas<Window>,
