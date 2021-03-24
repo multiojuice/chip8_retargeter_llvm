@@ -51,7 +51,6 @@ impl CPU {
 
     pub fn execute_next_opcode(&mut self) {
         let opcode = self.memory.get_opcode(self.PC);
-        println!("{:?}", opcode);
         self.d_flag = false;
 
         // Parts of the opcode that are used by various instructions
@@ -229,7 +228,6 @@ impl CPU {
                         // DRW Vx, Vy, nibble: Display nibble-byte sprite stored at mem loc I at
                         // (regX, regY) on the screen. Set VF to 1 if there is a collision between pixels
                         self.gp_registers[0x0f] = 0;
-                        println!("Should draw");
                         for current in 0..(nibble as usize) {
                             // read up to nibble bytes
                             let y = (self.gp_registers[y_val] as usize + current) % VIDEO_HEIGHT;
@@ -245,7 +243,6 @@ impl CPU {
                         }
 
                         self.d_flag = true;
-                        println!();
                         self.PC += 2;
                         return
                     },
