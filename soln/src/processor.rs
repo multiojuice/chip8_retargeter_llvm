@@ -356,7 +356,7 @@ impl CPU {
         if self.dt > 0 {
             self.dt -= 1;
         }
-        if self.sp > 0 {
+        if self.st > 0 {
             println!("Beep");
             self.st -= 1;
         }
