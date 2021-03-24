@@ -3,6 +3,7 @@ mod processor;
 
 use std::time::{Instant, Duration};
 use std::thread::sleep;
+use std::env;
 
 extern crate sdl2;
 use processor::CPU;
@@ -21,10 +22,11 @@ use drivers::{InputDriver, VideoDriver};
  * FUNCTIONS
  ******************/
 pub fn main() -> Result<(), String> {
+    let args: Vec<String> = env::args().collect();
     let context = sdl2::init()?;
     let mut video_driver = VideoDriver::new(&context);
     let mut input_driver = InputDriver::new(&context);
-    let mut cpu: CPU = CPU::new("/home/zach/Programs/RustStuff/group06/soln/assets/test_opcode.ch8");
+    let mut cpu: CPU = CPU::new(&args[1]);
 
     loop {
         let duration = Instant::now();
