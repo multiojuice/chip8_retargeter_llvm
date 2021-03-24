@@ -12,11 +12,11 @@ use drivers::{InputDriver, VideoDriver};
 /******************
  * CONFIG
  ******************/
- const SCALAR: u32 = 16;
- const VIDEO_WIDTH: usize = 64;
- const VIDEO_HEIGHT: usize = 32;
- const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
- const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
+ pub const SCALAR: u32 = 16;
+ pub const VIDEO_WIDTH: usize = 64;
+ pub const VIDEO_HEIGHT: usize = 32;
+ pub const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
+ pub const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
 
 /******************
  * FUNCTIONS
