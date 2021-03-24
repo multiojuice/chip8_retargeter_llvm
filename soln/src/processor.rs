@@ -259,7 +259,7 @@ impl CPU {
                             0x00A1 => {
                                 // SKNP Vx: Skip next instruction if key with value regX is not pressed
                                 let key = self.gp_registers[x_val] as usize;
-                                if !self.mmio.input_memory[x_val] {
+                                if !self.mmio.input_memory[key] {
                                     self.PC += 4
                                 } else {
                                     self.PC += 2;
