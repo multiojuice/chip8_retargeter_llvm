@@ -11,13 +11,13 @@ use rand::random;
  const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
 
 pub struct MMIO {
-    video_memory: [[u8; VIDEO_WIDTH]; VIDEO_HEIGHT],
-    input_memory: [bool; 16]
+    pub video_memory: [[u8; VIDEO_WIDTH]; VIDEO_HEIGHT],
+    pub input_memory: [bool; 16]
 }
 
 pub struct CPU {
     // Memmory mapped Input Output
-    mmio: MMIO,
+    pub mmio: MMIO,
     // General purpose registers
     gp_registers: [u8; 16],
     // Special registers
