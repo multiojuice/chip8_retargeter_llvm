@@ -63,9 +63,13 @@ impl CPU {
 
         match opcode {
             0x00E0 => {
-                // TODO Display stuff
                 // CLS: Clear screen
-                print!("clear");
+                for i in 0..VIDEO_HEIGHT {
+                    for j in 0..VIDEO_WIDTH {
+                        self.mmio.video_memory[i][j] = 0;        
+                    }
+                }
+                
                 self.PC += 2;
                 return
             },
