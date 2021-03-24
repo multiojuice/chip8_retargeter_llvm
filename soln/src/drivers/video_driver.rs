@@ -46,6 +46,7 @@ impl VideoDriver {
               0 => self.canvas.set_draw_color(pixels::Color::RGB(0, 0, 0)),
               _ => self.canvas.set_draw_color(pixels::Color::RGB(115, 115, 115))
             }
+            
             // Fill scaled up pixel
             self.canvas.fill_rect(Rect::new(x as i32, y as i32, SCALAR, SCALAR)).ok();
         }
