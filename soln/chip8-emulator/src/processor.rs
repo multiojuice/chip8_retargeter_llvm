@@ -139,7 +139,7 @@ impl CPU {
                         match opcode & 0x000F {
                             0x0000 => {
                                 // LD Vx, Vy: Store val of register[x_val] in register[y_val]
-                                self.gp_registers[y_val] = self.gp_registers[x_val];
+                                self.gp_registers[x_val] = self.gp_registers[y_val];
                                 self.pc += 2;
                                 return
                             },

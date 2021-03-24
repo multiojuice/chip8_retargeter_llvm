@@ -12,7 +12,7 @@ use drivers::{InputDriver, VideoDriver};
 /******************
  * CONFIG
  ******************/
- const SCALAR: u32 = 16;
+const SCALAR: u32 = 16;
  const VIDEO_WIDTH: usize = 64;
  const VIDEO_HEIGHT: usize = 32;
  const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
@@ -27,10 +27,10 @@ pub fn main() -> Result<(), String> {
     let mut video_driver = VideoDriver::new(&context);
     let mut input_driver = InputDriver::new(&context);
     let mut cpu: CPU = CPU::new(&args[1]);
-
+    let execution_rate = Duration::from_millis(2);
     loop {
         let duration = Instant::now();
-        let execution_rate = Duration::from_millis(16);
+        
 
         let input = input_driver.get_input();
         match input {
@@ -39,7 +39,6 @@ pub fn main() -> Result<(), String> {
         }
 
         cpu.execute_next_opcode();
-        
         if cpu.get_draw_flag() {
             video_driver.draw(&cpu.mmio.video_memory);
         }
