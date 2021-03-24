@@ -5,10 +5,6 @@ use std::time::{Instant, Duration};
 use std::thread::sleep;
 
 extern crate sdl2;
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
-use sdl2::pixels::Color;
-
 use processor::CPU;
 use drivers::{InputDriver, VideoDriver};
 

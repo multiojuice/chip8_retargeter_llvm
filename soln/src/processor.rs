@@ -69,7 +69,6 @@ impl CPU {
                         self.mmio.video_memory[i][j] = 0;        
                     }
                 }
-                
                 self.PC += 2;
                 return
             },
@@ -228,8 +227,23 @@ impl CPU {
                     0xD000 => {
                         // DRW Vx, Vy, nibble: Display nibble-byte sprite stored at mem loc I at
                         // (regX, regY) on the screen. Set VF to 1 if there is a collision between pixels
-                        // TODO Display stuff
-                        unimplemented!()
+                        self.gp_registers[0x0f] = 0;
+                        for current in 0..(nibble as usize) {
+                            // read up to nibble bytes
+                            let y = (self.gp_registers[y_val] as usize + current) % VIDEO_HEIGHT;
+                            for bit in 0..8 {
+                                let x = (self.gp_registers[x_val] as usize + bit) % VIDEO_WIDTH;
+                                // get bit and shift to place
+                                let colored = self.memory.read_byte(self.I + (byte as u16)) >> (7-bit) & 1;
+                                // set Vf
+                                self.gp_registers[0x0f] |= colored & self.mmio.video_memory[y][x];
+                                // set actual color
+                                self.mmio.video_memory[y][x] ^= colored;
+                            }
+                        }
+                        
+                        self.PC += 2;
+                        return
                     },
                     0xE000 => {
                         match opcode & 0x00FF {
