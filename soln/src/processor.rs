@@ -330,16 +330,16 @@ impl CPU {
                             },
                             0x0055 => {
                                 // LD [I], Vx: Store registers reg0 through regX in mem starting at I
-                                for i in 0..x_val {
-                                    self.memory.write_byte(i as u16, self.gp_registers[i]);
+                                for i in 0..=x_val {
+                                    self.memory.write_byte(self.i + i as u16, self.gp_registers[i]);
                                 }
                                 self.pc += 2;
                                 return
                             },
                             0x0065 => {
                                 // LD Vx, [I]: Read registers reg0 through regX from mem starting at I
-                                for i in 0..x_val {
-                                    self.gp_registers[i] = self.memory.read_byte(i as u16);
+                                for i in 0..=x_val {
+                                    self.gp_registers[i] = self.memory.read_byte(self.i + i as u16);
                                 }
                                 self.pc += 2;
                                 return
