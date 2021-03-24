@@ -1,3 +1,7 @@
+/**
+ * mod.rs
+ * Simply imports and re-exports
+ */
 mod file_driver;
 mod video_driver;
 mod input_driver;

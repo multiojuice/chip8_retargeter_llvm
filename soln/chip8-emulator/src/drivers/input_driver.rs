@@ -1,3 +1,8 @@
+/**
+ * input_driver.rs
+ * This file handles polling input from SDL and getting back
+ * to the main program via InputDriver.get_input()
+ */
 use sdl2;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;

@@ -1,3 +1,13 @@
+/**
+ * main.rs
+ * this is the main file that should handle the main emulator loop.
+ * This loop includes the following:
+ *      1) Polling input
+ *      2) Running on Cycle of the CPU
+ *      3) Updating graphics (if needed)
+ *      4) Updating timer registers
+ *      5) Controlling execution rate of your emulator, (Hz)
+ */
 mod drivers;
 mod processor;
 
@@ -18,9 +28,14 @@ const SCALAR: u32 = 16;
  const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
  const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
 
-/******************
- * FUNCTIONS
- ******************/
+ /* main this function should handle the main emulator loop.
+ * This loop includes the following:
+ *      1) Polling input
+ *      2) Running on Cycle of the CPU
+ *      3) Updating graphics (if needed)
+ *      4) Updating timer registers
+ *      5) Controling execution rate of your emulator, (Hz)
+ */
 pub fn main() -> Result<(), String> {
     let args: Vec<String> = env::args().collect();
     let context = sdl2::init()?;
@@ -30,8 +45,6 @@ pub fn main() -> Result<(), String> {
     let execution_rate = Duration::from_millis(2);
     loop {
         let duration = Instant::now();
-        
-
         let input = input_driver.get_input();
         match input {
             Ok(mem) => cpu.mmio.input_memory = mem,

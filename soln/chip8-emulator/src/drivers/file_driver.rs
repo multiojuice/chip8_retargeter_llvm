@@ -1,3 +1,8 @@
+/**
+ * file_driver.rs
+ * This file handles reading in the ROM and exposing
+ * a get_opcode() and file reading/writing.
+ */
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -21,12 +26,16 @@ const FONT_SET: [u8; 80] = [
 ];
 
 pub struct FileDriver {
+  // Read only memory (except Chip8 spec allows writing too!)
   pub rom: [u8; 4096],
+  // Size of the program.
   pub size: usize,
 }
 
 impl FileDriver {
+  // Init new FileDriver
   pub fn new(filename: &str) -> FileDriver {
+    // Open and read in file
     let mut f = File::open(filename).expect("Error: Cannot open");
     let mut file_buffer = [0u8; 4096 - 512];
 
@@ -38,11 +47,13 @@ impl FileDriver {
 
     let mut rom = [0u8; 4096];
     let mut index = 0x0;
+    // Write fontset to memory
     while index < 80 {
       rom[index] = FONT_SET[index];
       index += 1;
     }
     index = 0x200;
+    // write file into memory
     while index < 4096 {
       rom[index] = file_buffer[index - 0x200];
       index += 1;
@@ -54,6 +65,10 @@ impl FileDriver {
     }
   }
 
+  /**
+   * get_opcode takes in a location and reads in the next TWO bytes
+   *    then returns the two bytes as a U16.
+   */
   pub fn get_opcode(&self, location: u16) -> u16 {
     if location > 4090 {
       return 0;
@@ -62,6 +77,10 @@ impl FileDriver {
     (self.rom[loc] as u16) << 8 | (self.rom[loc + 1]) as u16
   }
 
+  /**
+   * write_byte takes a location and writes that byte to that location 
+   *    in memory
+   */
   pub fn write_byte(&mut self, location: u16, byte: u8) {
     if location > 4095 {
       panic!("Invalid memory location: {}", location);
@@ -70,6 +89,9 @@ impl FileDriver {
     self.rom[loc] = byte;
   }
 
+  /**
+   * read_byte takes a location and returns a byte at that location
+   */
   pub fn read_byte(&self, location: u16) -> u8 {
     if location > 4095 {
       panic!("Invalid memory location: {}", location);

@@ -1,3 +1,9 @@
+/**
+ * video_driver.rs
+ * this file abstracts the graphics implementation out into just 
+ * memory mapped io from the cpu. 
+ */
+
 use sdl2;
 use sdl2::pixels;
 use sdl2::rect::Rect;
@@ -36,13 +42,17 @@ impl VideoDriver {
     VideoDriver { canvas: canvas }
   }
 
+  /**
+   * draw takes in a double array of pixels indicating if a pixel should be 
+   *    colored or not colored.
+   */
   pub fn draw(&mut self, pixels: &[[u8; VIDEO_WIDTH]; VIDEO_HEIGHT]) {
     for (y, row) in pixels.iter().enumerate() {
-        for (x, &color) in row.iter().enumerate() {
+        for (x, &colored) in row.iter().enumerate() {
             // Scale up to correct pixel top left
             let x = (x as u32) * SCALAR;
             let y = (y as u32) * SCALAR;
-            match color {
+            match colored {
               0 => self.canvas.set_draw_color(pixels::Color::RGB(0, 0, 0)),
               _ => self.canvas.set_draw_color(pixels::Color::RGB(115, 115, 115))
             }
