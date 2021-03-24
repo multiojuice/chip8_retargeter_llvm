@@ -39,9 +39,13 @@ pub fn main() -> Result<(), String> {
         }
 
         cpu.execute_next_opcode();
+        
         if cpu.get_draw_flag() {
             video_driver.draw(&cpu.mmio.video_memory);
         }
+
+        cpu.update_timers();
+
         if duration.elapsed() < execution_rate {
             sleep(execution_rate - duration.elapsed())
         }
