@@ -1,8 +1,9 @@
 /**
  * processor.rs
- *  this file 
+ *  this file emulates the "CPU" of a chip8 program
+ *  this file is responisble for implmenting all the opcodes, registers,
+ *  and setting the memory mapped I/O.
  */
-
 use crate::drivers::FileDriver;
 use crate::VIDEO_HEIGHT;
 use crate::VIDEO_WIDTH;
