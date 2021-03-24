@@ -130,7 +130,8 @@ impl CPU {
                     },
                     0x7000 => {
                         // Add Vx, byte: Add byte to register[x_val]
-                        self.gp_registers[x_val] += byte;
+                        let added_val = self.gp_registers[x_val] as u16 + byte as u16;
+                        self.gp_registers[x_val] = added_val as u8;
                         self.PC += 2;
                         return
                     },
