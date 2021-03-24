@@ -76,6 +76,7 @@ impl CPU {
                 // RET: Return from subroutine
                 self.pc = self.stack[self.sp];
                 self.sp -= 1;
+                self.pc += 2;
                 return
             }
             _ => {
@@ -171,28 +172,28 @@ impl CPU {
                             0x0005 => {
                                 // SUB Vx, Vy: Set regX = regX - regY, set regF to 1 if there is no borrow (regX > regY)
                                 self.gp_registers[0xF] = if self.gp_registers[x_val] > self.gp_registers[y_val] { 1 } else { 0 };
-                                self.gp_registers[x_val] -= self.gp_registers[y_val];
+                                self.gp_registers[x_val] = self.gp_registers[x_val].wrapping_sub(self.gp_registers[y_val]);
                                 self.pc += 2;
                                 return
                             },
                             0x0006 => {
                                 // SHR Vx: If least-significant digit of regX is 1, set VF to 1, else 0. Divide regX by 2
                                 self.gp_registers[0xF] = self.gp_registers[x_val] & 0x01;
-                                self.gp_registers[x_val] /= 2;
+                                self.gp_registers[x_val] = self.gp_registers[x_val] >> 1;
                                 self.pc += 2;
                                 return
                             },
                             0x0007 => {
                                 // SUBN Vx, Vy: Set regX = regY - regX, set regF to 1 if there is no borrow (regY > regX)
                                 self.gp_registers[0xF] = if self.gp_registers[y_val] > self.gp_registers[x_val] { 1 } else { 0 };
-                                self.gp_registers[x_val] = self.gp_registers[y_val] - self.gp_registers[x_val];
+                                self.gp_registers[x_val] = self.gp_registers[y_val].wrapping_sub(self.gp_registers[x_val]);
                                 self.pc += 2;
                                 return
                             },
                             0x000E => {
                                 // SHL Vx: If most-significant digit of regX is 1, set VF to 1, else 0. Multiply regX by 2
                                 self.gp_registers[0xF] = self.gp_registers[x_val] & 0x80 >> 7;
-                                self.gp_registers[x_val] *= 2;
+                                self.gp_registers[x_val] = self.gp_registers[x_val] << 1;
                                 self.pc += 2;
                                 return
                             },
