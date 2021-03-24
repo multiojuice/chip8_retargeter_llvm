@@ -1,8 +1,23 @@
 use crate::drivers::FileDriver;
-
 use rand::random;
 
+/******************
+ * CONFIG
+ ******************/
+ const SCALAR: u32 = 16;
+ const VIDEO_WIDTH: usize = 64;
+ const VIDEO_HEIGHT: usize = 32;
+ const SDL_WIDTH: u32 = (VIDEO_WIDTH as u32) * SCALAR;
+ const SDL_HEIGHT: u32 = (VIDEO_HEIGHT as u32) * SCALAR;
+
+pub struct MMIO {
+    pub video_memory: [[u8; VIDEO_WIDTH]; VIDEO_HEIGHT],
+    pub input_memory: [bool; 16]
+}
+
 pub struct CPU {
+    // Memory mapped Input Output
+    pub mmio: MMIO,
     // General purpose registers
     gp_registers: [u8; 16],
     // Special registers
@@ -18,6 +33,10 @@ pub struct CPU {
 impl CPU {
     pub fn new(file_name: &str) -> CPU {
         CPU {
+            mmio: MMIO {
+                video_memory: [[0; VIDEO_WIDTH]; VIDEO_HEIGHT],
+                input_memory: [false; 16]
+            },
             gp_registers: [0; 16],
             I: 0,
             DT: 0,
@@ -44,9 +63,13 @@ impl CPU {
 
         match opcode {
             0x00E0 => {
-                // TODO Display stuff
                 // CLS: Clear screen
-                print!("clear");
+                for i in 0..VIDEO_HEIGHT {
+                    for j in 0..VIDEO_WIDTH {
+                        self.mmio.video_memory[i][j] = 0;        
+                    }
+                }
+                self.d_flag = true;
                 self.PC += 2;
                 return
             },
@@ -205,20 +228,47 @@ impl CPU {
                     0xD000 => {
                         // DRW Vx, Vy, nibble: Display nibble-byte sprite stored at mem loc I at
                         // (regX, regY) on the screen. Set VF to 1 if there is a collision between pixels
-                        // TODO Display stuff
-                        unimplemented!()
+                        self.gp_registers[0x0f] = 0;
+                        println!("Should draw");
+                        for current in 0..(nibble as usize) {
+                            // read up to nibble bytes
+                            let y = (self.gp_registers[y_val] as usize + current) % VIDEO_HEIGHT;
+                            for bit in 0..8 {
+                                let x = (self.gp_registers[x_val] as usize + bit) % VIDEO_WIDTH;
+                                // get bit and shift to place
+                                let colored = self.memory.read_byte(self.I + (current as u16)) >> (7-bit) & 1;
+                                // set Vf
+                                self.gp_registers[0x0f] |= colored & self.mmio.video_memory[y][x];
+                                // set actual color
+                                self.mmio.video_memory[y][x] ^= colored;
+                            }
+                        }
+
+                        self.d_flag = true;
+                        println!();
+                        self.PC += 2;
+                        return
                     },
                     0xE000 => {
                         match opcode & 0x00FF {
                             0x009E => {
                                 // SKP Vx: Skip next instruction if key with value regX is pressed
-                                // TODO I/O Stuff
-                                unimplemented!()
+                                let key = self.gp_registers[x_val] as usize;
+                                if self.mmio.input_memory[key] {
+                                    self.PC += 4
+                                } else {
+                                    self.PC += 2;
+                                }
                             },
                             0x00A1 => {
                                 // SKNP Vx: Skip next instruction if key with value regX is not pressed
-                                // TODO I/O Stuff
-                                unimplemented!()
+                                let key = self.gp_registers[x_val] as usize;
+                                if !self.mmio.input_memory[key] {
+                                    self.PC += 4
+                                } else {
+                                    self.PC += 2;
+                                }
+                                return
                             },
                             _ => {println!("Unknown opcode: {}", opcode); self.PC += 2; return}
                         }
@@ -233,8 +283,14 @@ impl CPU {
                             },
                             0x000A => {
                                 // LD Vx, K: Wait for a key press then store that key val in regX
-                                // TODO I/O stuff
-                                unimplemented!()
+                                for (i, v) in self.mmio.input_memory.iter().enumerate() {
+                                    if *v {
+                                        self.PC += 2;
+                                        self.gp_registers[x_val] = i as u8;
+                                        return
+                                    }
+                                }
+                                return 
                             },
                             0x0015 => {
                                 // LD DT, Vx: Set delay time = regX
@@ -256,9 +312,9 @@ impl CPU {
                             },
                             0x0029 => {
                                 // LD F, Vx: Set I = location in memory for the hex font sprite for digit regX
-                                let font_digit: u8 = self.gp_registers[x_val];
+                                let font_digit: u16 = self.gp_registers[x_val] as u16;
                                 // All font sprites start at location (their decimal value times 5)
-                                self.I = (font_digit * 5) as u16;
+                                self.I = font_digit * 5;
                                 self.PC += 2;
                                 return
                             },
@@ -300,7 +356,7 @@ impl CPU {
 
     pub fn update_timers(&mut self) {
         if self.DT > 0 {
-            self.DR -= 1;
+            self.DT -= 1;
         }
         if self.SP > 0 {
             println!("Beep");
